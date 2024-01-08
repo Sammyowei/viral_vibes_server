@@ -18,13 +18,13 @@ import 'service_client.dart';
 
 class ServiceProvider extends ServiceClient {
   ServiceProvider({
-    required this.accountIdentifier,
-    required this.orderId,
+    this.accountIdentifier,
+    this.orderId,
   });
 
   List<Service> _serviceList = [];
-  final String accountIdentifier;
-  final int orderId;
+  final String? accountIdentifier;
+  final int? orderId;
 
   List<Service> get services => _serviceList;
   static final networkClient = NetworkHttpClient(baseUrl: Env.serviceApiUrl);
@@ -43,7 +43,7 @@ class ServiceProvider extends ServiceClient {
 
       if (services[mid].serviceId == serviceId) {
         return services[mid];
-      } else if (services[mid].serviceId.compareTo(serviceId) < 0) {
+      } else if (services[mid].serviceId.compareTo(serviceId.toString()) < 0) {
         low = mid + 1;
       } else {
         high = mid - 1;
@@ -66,7 +66,7 @@ class ServiceProvider extends ServiceClient {
 
     await _dbController.openConnection();
 
-    final userData = await _dbController.read(accountIdentifier);
+    final userData = await _dbController.read(accountIdentifier!);
     await _dbController.closeConnection();
     if (userData == null) {
       throw const SocketException.closed();
@@ -109,7 +109,7 @@ class ServiceProvider extends ServiceClient {
     user.addOrder(orderData);
 
     await _dbController.openConnection();
-    await _dbController.update(accountIdentifier, user.toJson());
+    await _dbController.update(accountIdentifier!, user.toJson());
     await _dbController.closeConnection();
     return {
       'message': 'The order has been successfully placed.',
@@ -156,8 +156,10 @@ class ServiceProvider extends ServiceClient {
       'key': Env.serviceApiKey,
       'action': 'services',
     };
+
     final payload = await networkClient.postRequest(endPoint, body);
-    final serviceList = jsonDecode(payload.body);
+
+    final serviceList = json.decode(payload.body);
     if (serviceList is! List) {
       throw ServiceException(
         "We're encountering issues retrieving resources from the server, impacting our operations",
@@ -175,7 +177,7 @@ class ServiceProvider extends ServiceClient {
     StringBuffer idsBuffer = StringBuffer();
     var orderIds = '';
     await _dbController.openConnection();
-    final userData = await _dbController.read(accountIdentifier);
+    final userData = await _dbController.read(accountIdentifier!);
     await _dbController.closeConnection();
 
     if (userData == null) {

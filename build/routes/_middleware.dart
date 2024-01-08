@@ -6,5 +6,6 @@ Handler middleware(Handler handler) {
   return handler
       .use(corsMiddlerware())
       .use(jwtMiddleware())
-      .use(dbMiddleware());
+      .use(dbMiddleware())
+      .use(serviceMiddleWare());
 }

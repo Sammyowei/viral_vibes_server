@@ -10,26 +10,30 @@ part 'env.g.dart';
 @Envied(path: '.env')
 abstract class Env {
   @EnviedField(varName: 'VIRAL_VIBE_DB_URL', obfuscate: true)
-  static final String dbUrl =
-      Platform.environment['VIRAL_VIBE_DB_URL'] ?? _Env.dbUrl;
+  static final String dbUrl = _Env.dbUrl;
 
   @EnviedField(varName: 'SERVICE_API_KEY', obfuscate: true)
-  static final String serviceApiKey =
-      Platform.environment['SERVICE_API_KEY'] ?? _Env.serviceApiKey;
+  static final String serviceApiKey = _Env.serviceApiKey;
 
   @EnviedField(varName: 'SERVICE_API_URL', obfuscate: true)
-  static final String serviceApiUrl =
-      Platform.environment['SERVICE_API_URL'] ?? _Env.serviceApiKey;
+  static final String serviceApiUrl = _Env.serviceApiUrl;
 
   @EnviedField(varName: 'DB_STORE', obfuscate: true)
-  static final String dbStore =
-      Platform.environment['DB_STORE'] ?? _Env.dbStore;
+  static final String dbStore = _Env.dbStore;
 
   @EnviedField(varName: 'JWT_SECRET', obfuscate: true)
-  static final String jwtSecret =
-      Platform.environment['JWT_SECRET'] ?? _Env.jwtSecret;
+  static final String jwtSecret = _Env.jwtSecret;
 
   @EnviedField(varName: 'JWT_ISSUER', obfuscate: true)
-  static final String jwtIssuer =
-      Platform.environment['JWT_SECRET'] ?? _Env.jwtIssuer;
+  static final String jwtIssuer = _Env.jwtIssuer;
 }
+
+
+// class Env {
+//   static final String dbUrl = Platform.environment['VIRAL_VIBE_DB_URL']!;
+//   static final String serviceApiKey = Platform.environment['SERVICE_API_KEY']!;
+//   static final String serviceApiUrl = Platform.environment['SERVICE_API_KEY']!;
+//   static final String dbStore = Platform.environment['DB_STORE']!;
+//   static final String jwtIssuer = Platform.environment['JWT_SECRET']!;
+//   static final String jwtSecret = Platform.environment['JWT_SECRET']!;
+// }

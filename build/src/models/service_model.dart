@@ -19,7 +19,7 @@ class Service {
   });
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
-      serviceId: json['service'] as int,
+      serviceId: json['service'] as String,
       name: json['name'] as String,
       type: json['type'] as String,
       category: json['category'] as String,
@@ -32,7 +32,7 @@ class Service {
     );
   }
 
-  final int serviceId;
+  final String serviceId;
   final String name;
   String type;
   String category;
