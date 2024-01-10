@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:dart_frog/dart_frog.dart';
 
-Response onRequest(RequestContext context) {
-  final request = context.request;
-  final port = request.connectionInfo.remoteAddress.rawAddress;
+Future<Response> onRequest(RequestContext context) async {
   return Response(
-    body: 'Viral vibe endpoint @ api.viralvibe.hawkitpro.com : $port',
+    statusCode: HttpStatus.found, // 302 status code for redirection
+    headers: {
+      'Location':
+          '/api/mailer/account_creation?email=samuelsonowei04@gmail.com',
+    },
   );
 }

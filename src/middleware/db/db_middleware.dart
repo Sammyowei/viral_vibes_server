@@ -7,6 +7,8 @@ import 'package:viral_vibes_server/lib.dart';
 
 import '../../db/db_controller.dart';
 
+/// Constructs and returns a middleware for database connection.
+/// This middleware initializes and provides access to a database controller.
 Middleware dbMiddleware() {
   return provider<Future<DbController>>(
     (context) async {

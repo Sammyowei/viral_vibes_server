@@ -10,6 +10,7 @@ import '../routes/index.dart' as index;
 import '../routes/api/service/services.dart' as api_service_services;
 import '../routes/api/auth/signup.dart' as api_auth_signup;
 import '../routes/api/auth/signin.dart' as api_auth_signin;
+import '../routes/api/auth/otp/generate.dart' as api_auth_otp_generate;
 
 import '../routes/_middleware.dart' as middleware;
 
@@ -29,9 +30,17 @@ Future<HttpServer> createServer(InternetAddress address, int port) async {
 Handler buildRootHandler() {
   final pipeline = const Pipeline().addMiddleware(middleware.middleware);
   final router = Router()
+    ..mount('/api/auth/otp', (context) => buildApiAuthOtpHandler()(context))
     ..mount('/api/auth', (context) => buildApiAuthHandler()(context))
     ..mount('/api/service', (context) => buildApiServiceHandler()(context))
     ..mount('/', (context) => buildHandler()(context));
+  return pipeline.addHandler(router);
+}
+
+Handler buildApiAuthOtpHandler() {
+  final pipeline = const Pipeline();
+  final router = Router()
+    ..all('/generate', (context) => api_auth_otp_generate.onRequest(context,));
   return pipeline.addHandler(router);
 }
 

@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: public_member_api_docs
+
 import 'dart:io';
 
 import 'package:envied/envied.dart';
@@ -26,6 +28,21 @@ abstract class Env {
 
   @EnviedField(varName: 'JWT_ISSUER', obfuscate: true)
   static final String jwtIssuer = _Env.jwtIssuer;
+
+  @EnviedField(varName: 'SMPT_SERVER_EMAIL', obfuscate: true)
+  static final String smptServerEmail = _Env.smptServerEmail;
+
+  @EnviedField(varName: 'SMPT_SERVER_PASSWORD', obfuscate: true)
+  static final String smptServerPassword = _Env.smptServerPassword;
+
+  @EnviedField(varName: 'SMPT_SERVER', obfuscate: true)
+  static final String smptServer = _Env.smptServer;
+
+  @EnviedField(varName: 'SMPT_SERVER_PORT', obfuscate: true)
+  static final String smptServerPort = _Env.smptServerPort;
+
+  @EnviedField(varName: 'SMPT_SERVER_MODE', obfuscate: true)
+  static final String smptServerMode = _Env.smptServerMode;
 }
 
 
