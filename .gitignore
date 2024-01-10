@@ -11,7 +11,8 @@ pubspec.lock
 # Files and directories created by dart_frog
 
 .dart_frog
-.env
+
 
 # Test related files
 coverage/
+.env
