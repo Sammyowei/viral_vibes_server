@@ -76,7 +76,8 @@ String otprequestmail({
             padding: 10px 0;
             background-color: rgba(250, 104, 0, 0.06);
             border-radius: 5px;
-
+            letter-spacing: 10px;
+            font-size: 40px;
             margin-bottom: 20px;
         }
     </style>

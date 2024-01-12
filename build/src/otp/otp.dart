@@ -1,6 +1,6 @@
 // ignore_for_file: one_member_abstracts
 
-import 'package:dart_dash_otp/dart_dash_otp.dart';
+import 'totp.dart';
 
 abstract class Otp {
   String generateOtp();
@@ -15,18 +15,16 @@ class OtpClient extends Otp {
   TOTP get totp => _totp();
   TOTP _totp() {
     return TOTP(
-      secret: 'J22U6B3WIWRRBTAV',
-      interval: _duration.inSeconds,
-    );
+        secret: 'J22U6B3WIWRRBTAV', duration: const Duration(minutes: 10));
   }
 
   @override
   String generateOtp() {
-    return totp.now();
+    return totp.generate();
   }
 
   @override
   bool verifyOtp(String otp) {
-    return totp.verify(otp: otp);
+    return totp.verify(otp);
   }
 }

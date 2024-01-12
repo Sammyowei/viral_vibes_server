@@ -16,6 +16,8 @@ class AuthenticationController extends Authentication {
   AuthenticationController({
     required this.dbController,
     required this.emailAddress,
+    this.referee,
+    this.isReferred = false,
     this.userName = '',
     this.password = '',
     this.jwtToken = '',
@@ -33,6 +35,8 @@ class AuthenticationController extends Authentication {
   final String password;
   final String mobileNumber;
   final String jwtToken;
+  final String? referee;
+  final bool isReferred;
 
   /// Allows you to validate the current User session by verifying the [jwtToken]
   /// to check if the user session is still active or  expired or has an error.
@@ -138,6 +142,8 @@ class AuthenticationController extends Authentication {
         mobileNumber: mobileNumber,
         password: hashedPassword,
         passwordSalt: passwordSalt,
+        isReferred: isReferred,
+        referee: referee,
       );
 
       await dbController.openConnection();
@@ -172,5 +178,34 @@ class AuthenticationController extends Authentication {
     final hashedPassword =
         sha256.convert(utf8.encode(saltedPassword)).toString();
     return hashedPassword;
+  }
+
+  @override
+  Future<Map<String, dynamic>> verifyaccount() async {
+    await dbController.openConnection();
+    final data = await dbController.read(emailAddress);
+    await dbController.closeConnection();
+
+    /// Data Validation to see if the user with the [emailAddress] exist.
+
+    if (data == null) {
+      return {
+        'error':
+            'The email provided does not match any existing account in our records.',
+      };
+    } else {
+      _user = User.fromJson(data);
+
+      _user.verifyAccount();
+
+      await dbController.openConnection();
+      await dbController.update(emailAddress, _user.toJson());
+      await dbController.closeConnection();
+
+      return {
+        'message': 'Account verification was sucsessful',
+        'details': _user.toJson()
+      };
+    }
   }
 }

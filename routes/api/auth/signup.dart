@@ -12,6 +12,7 @@ import 'package:dart_frog/dart_frog.dart';
 
 // Import required project files.
 import '../../../src/authentication/authentication_controller.dart';
+import '../../../src/authentication/referal_state_data.dart';
 import '../../../src/authentication/signup_authentication_state_data.dart';
 import '../../../src/db/db_controller.dart';
 import '../../../src/mail/smpt_mailer/smpt_mailer.dart';
@@ -72,16 +73,117 @@ Future<Response> onRequest(RequestContext context) async {
     );
   }
 
+  final referalState = ReferalStateData.fromJson(jsonPayload);
+
+  final isReferalCodeNull = referalState.isReferalCodeNull();
+
   // Communicate with the database middleware to open a connection and perform signup.
   final db = await context.read<Future<DbController>>();
 
+  if (isReferalCodeNull != true) {
+    final refereeData = await db.querryOne(
+      identifier: 'referalCode',
+      data: referalState.referalCode,
+    );
+
+    if (refereeData == null) {
+      final authClient = AuthenticationController(
+          dbController: db,
+          emailAddress: signUpAuthenticationStateData.email!,
+          password: signUpAuthenticationStateData.password!,
+          mobileNumber: signUpAuthenticationStateData.mobileNumber!,
+          userName: signUpAuthenticationStateData.userName!);
+
+      // Sign up using authentication logic.
+      final response = await authClient.signUp();
+      final isErrorResponse = response['error'];
+
+      if (isErrorResponse != null) {
+        return Response.json(
+          body: {
+            'error': isErrorResponse,
+          },
+          statusCode: HttpStatus.badGateway,
+        );
+      }
+
+      // If successful signup, prepare and send an account creation email notification.
+      final mailer = SmptMailer();
+      final userData = response['detail'];
+      final user = User.fromJson(userData as Map<String, dynamic>);
+
+      final createAccountMail = accountCreationEmailTemplate(
+        email: user.emailAddress,
+      );
+      await mailer.sendMail(
+        email: user.emailAddress,
+        messageContent: createAccountMail,
+        senderName: 'Viral Vibes',
+        messageSubject: ' Welcome to Viral Vibe, Viber! 🚀',
+      );
+
+      // Return the response from the signup process.
+      return Response.json(
+        body: response,
+      );
+    } else {
+      final referee = User.fromJson(refereeData)..updateReferals();
+
+      final authClient = AuthenticationController(
+        dbController: db,
+        emailAddress: signUpAuthenticationStateData.email!,
+        password: signUpAuthenticationStateData.password!,
+        mobileNumber: signUpAuthenticationStateData.mobileNumber!,
+        userName: signUpAuthenticationStateData.userName!,
+        isReferred: true,
+        referee: referee.emailAddress,
+      );
+      // Sign up using authentication logic.
+      final response = await authClient.signUp();
+      final isErrorResponse = response['error'];
+
+      if (isErrorResponse != null) {
+        return Response.json(
+          body: {
+            'error': isErrorResponse,
+          },
+          statusCode: HttpStatus.badGateway,
+        );
+      }
+
+      // If successful signup, prepare and send an account creation email notification.
+      final mailer = SmptMailer();
+      final userData = response['detail'];
+      final user = User.fromJson(userData as Map<String, dynamic>);
+
+      final createAccountMail = accountCreationEmailTemplate(
+        email: user.emailAddress,
+      );
+
+      await db.openConnection();
+      await db.update(referee.emailAddress, referee.toJson());
+      await db.closeConnection();
+
+      await mailer.sendMail(
+        email: user.emailAddress,
+        messageContent: createAccountMail,
+        senderName: 'Viral Vibes',
+        messageSubject: ' Welcome to Viral Vibe, Viber! 🚀',
+      );
+
+      // Return the response from the signup process.
+      return Response.json(
+        body: response,
+      );
+    }
+  }
+
   final authClient = AuthenticationController(
-    dbController: db,
-    emailAddress: signUpAuthenticationStateData.email!,
-    password: signUpAuthenticationStateData.password!,
-    mobileNumber: signUpAuthenticationStateData.mobileNumber!,
-    userName: signUpAuthenticationStateData.userName!,
-  );
+      dbController: db,
+      emailAddress: signUpAuthenticationStateData.email!,
+      password: signUpAuthenticationStateData.password!,
+      mobileNumber: signUpAuthenticationStateData.mobileNumber!,
+      userName: signUpAuthenticationStateData.userName!);
 
   // Sign up using authentication logic.
   final response = await authClient.signUp();

@@ -4,6 +4,8 @@
 
 // ignore_for_file: sort_constructors_first, avoid_unused_constructor_parameters, use_setters_to_change_properties, lines_longer_than_80_chars
 
+import 'dart:math';
+
 import 'order_model.dart';
 import 'transaction_model.dart';
 
@@ -14,7 +16,10 @@ class User {
     required this.mobileNumber,
     required this.password,
     required this.passwordSalt,
+    this.referee,
     DateTime? createdAt,
+    String? referalCode,
+    this.isReferred = false,
     this.isVerified = false,
     this.orderHistory = const [],
     this.transactionHistory = const [],
@@ -22,15 +27,22 @@ class User {
     this.totalSpent = 0,
     this.totalTransaction = 0,
     this.walletBalance = 0,
-  }) : createdAt = DateTime.now();
+  })  : _createdAt = createdAt ?? DateTime.now(),
+        _referalCode = referalCode ?? _generateReferralCode(userName);
 
   final String userName;
   final String emailAddress;
   final String mobileNumber;
   String password;
   bool isVerified;
+
+  bool isReferred;
+
+  final String _referalCode;
+
+  final String? referee;
   final String passwordSalt;
-  final DateTime createdAt;
+  final DateTime _createdAt;
 
   int totalTransaction;
   int totalReferals;
@@ -41,6 +53,10 @@ class User {
 
   void updatePassword(String newPassword) {
     password = newPassword;
+  }
+
+  void updateReferals() {
+    totalReferals = totalReferals + 1;
   }
 
   void withraw(double amount) {
@@ -92,6 +108,10 @@ class User {
       emailAddress: json['emailAddress'] as String,
       mobileNumber: json['mobileNumber'] as String,
       isVerified: json['isVerified'] as bool,
+      isReferred: json['isReferred'] as bool,
+      referalCode: json['referalCode'] as String,
+      referee: json['referee'] as String?,
+      walletBalance: json['walletBalance'] as double,
       password: json['password'] as String,
       passwordSalt: json['passwordSalt'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
@@ -110,8 +130,11 @@ class User {
       'mobileNumber': mobileNumber,
       'password': password,
       'isVerified': isVerified,
+      'isReferred': isReferred,
+      'referalCode': _referalCode,
+      'referee': referee,
       'passwordSalt': passwordSalt,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': _createdAt.toIso8601String(),
       'totalTransaction': totalTransaction,
       'totalReferals': totalReferals,
       'totalSpent': totalSpent,
@@ -120,4 +143,25 @@ class User {
       'transactionHistory': transactionHistory.map((e) => e.toJson()).toList(),
     };
   }
+}
+
+String _generateReferralCode(String username) {
+  // Generate a random alphanumeric value of length 4
+  final randomValue = _generateRandomValue();
+
+  // Format the referral code
+  final referralCode = '$username-$randomValue-VIBER';
+  return referralCode;
+}
+
+String _generateRandomValue() {
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  final random = Random();
+  final stringBuffer = StringBuffer();
+
+  for (var i = 0; i < 4; i++) {
+    stringBuffer.write(characters[random.nextInt(characters.length)]);
+  }
+
+  return stringBuffer.toString();
 }

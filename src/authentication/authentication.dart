@@ -10,6 +10,8 @@ abstract class Authentication {
 
   Future<Map<String, dynamic>> resetPassword(String newPassword);
 
+  Future<Map<String, dynamic>> verifyaccount();
+
   String passwordSaltGenerator();
 
   String hashPassword({required String password, required String salt});

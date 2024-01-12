@@ -7,6 +7,7 @@
 import 'package:mongo_dart/mongo_dart.dart' as mongod;
 import 'package:viral_vibes_server/lib.dart';
 
+import '../models/user_model.dart';
 import '_db.dart';
 
 /// Allows and implement all CRUD operation from the [Db] class.
@@ -79,5 +80,36 @@ class DbController extends Db {
   Future<void> update(String identifier, Map<String, dynamic> data) async {
     final query = mongod.where.eq('emailAddress', identifier);
     await _db.collection(store).replaceOne(query, data);
+  }
+
+  @override
+  Future<List<User>> queryAll() async {
+    final users = <User>[];
+    await _db.open();
+    final userCollection = await _db.collection(store).find().toList();
+    await _db.close();
+
+    for (final user in userCollection) {
+      final userData = User.fromJson(user);
+
+      users.add(userData);
+    }
+    return users;
+  }
+
+  @override
+  Future<Map<String, dynamic>?> querryOne({
+    required String identifier,
+    required dynamic data,
+  }) async {
+    final query = mongod.where.eq(identifier, data);
+
+    await _db.open();
+
+    final user = await _db.collection(store).findOne(query);
+
+    await _db.close();
+
+    return user;
   }
 }
