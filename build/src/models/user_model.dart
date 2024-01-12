@@ -150,12 +150,14 @@ String _generateReferralCode(String username) {
   final randomValue = _generateRandomValue();
 
   // Format the referral code
-  final referralCode = '$username-$randomValue-VIBER';
+
+  final userName = username.toUpperCase();
+  final referralCode = 'Viber-$userName$randomValue';
   return referralCode;
 }
 
 String _generateRandomValue() {
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  const characters = '0123456789';
   final random = Random();
   final stringBuffer = StringBuffer();
 
