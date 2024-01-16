@@ -33,7 +33,7 @@ abstract class Env {
   static final String smptServerEmail = _Env.smptServerEmail;
 
   @EnviedField(varName: 'SMPT_SERVER_PASSWORD', obfuscate: true)
-  static final String smptServerPassword = _Env.smptServerPassword;
+  static String smptServerPassword = _Env.smptServerPassword;
 
   @EnviedField(varName: 'SMPT_SERVER', obfuscate: true)
   static final String smptServer = _Env.smptServer;
@@ -43,14 +43,10 @@ abstract class Env {
 
   @EnviedField(varName: 'SMPT_SERVER_MODE', obfuscate: true)
   static final String smptServerMode = _Env.smptServerMode;
+
+  @EnviedField(varName: 'SUPPORT_DB_STORE', obfuscate: true)
+  static final String supportDbStore = _Env.supportDbStore;
+
+  @EnviedField(varName: 'MARKET_DB_STORE', obfuscate: true)
+  static final String marketplaceDbStore = _Env.marketplaceDbStore;
 }
-
-
-// class Env {
-//   static final String dbUrl = Platform.environment['VIRAL_VIBE_DB_URL']!;
-//   static final String serviceApiKey = Platform.environment['SERVICE_API_KEY']!;
-//   static final String serviceApiUrl = Platform.environment['SERVICE_API_KEY']!;
-//   static final String dbStore = Platform.environment['DB_STORE']!;
-//   static final String jwtIssuer = Platform.environment['JWT_SECRET']!;
-//   static final String jwtSecret = Platform.environment['JWT_SECRET']!;
-// }

@@ -6,6 +6,8 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:viral_vibes_server/lib.dart';
 
 import '../../db/db_controller.dart';
+import '../../db/marketplace_db_controller.dart';
+import '../../db/support_db_controller.dart';
 
 /// Constructs and returns a middleware for database connection.
 /// This middleware initializes and provides access to a database controller.
@@ -17,4 +19,24 @@ Middleware dbMiddleware() {
       return dbController;
     },
   );
+}
+
+Middleware supportDbMiddleware() {
+  return provider<Future<SupportDbController>>((context) async {
+    final supportDbController = SupportDbController(store: Env.supportDbStore);
+    await supportDbController.initialize();
+
+    return supportDbController;
+  });
+}
+
+Middleware marketPlaceDbMiddleware() {
+  return provider<Future<MarketplaceDbController>>((context) async {
+    final marketPlaceBDController =
+        MarketplaceDbController(store: Env.marketplaceDbStore);
+
+    await marketPlaceBDController.initialize();
+
+    return marketPlaceBDController;
+  });
 }

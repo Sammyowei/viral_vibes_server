@@ -34,7 +34,7 @@ class ServiceProvider extends ServiceClient {
   static double nairaToDollar = 1350;
   static const endPoint = 'api/v2';
 
-  Service? getServiceDetails(int serviceId) {
+  Service? getServiceDetails(String serviceId) {
     services.sort((a, b) => a.serviceId.compareTo(b.serviceId));
     var low = 0;
     var high = services.length - 1;
@@ -49,11 +49,12 @@ class ServiceProvider extends ServiceClient {
         high = mid - 1;
       }
     }
+    return null;
   }
 
   @override
   Future<Map<String, dynamic>> addOrder(
-    int orderId,
+    String orderId,
     String link,
     int quantity,
   ) async {
@@ -123,14 +124,14 @@ class ServiceProvider extends ServiceClient {
 
   @override
   Future<Map<String, dynamic>> createMultipleOrderRefil(
-    List<int> orderIds,
+    List<String> orderIds,
   ) async {
     // TODO: implement createMultipleOrderRefil
     throw UnimplementedError();
   }
 
   @override
-  Future<Map<String, dynamic>> createOrderRefil(int orderId) async {
+  Future<Map<String, dynamic>> createOrderRefil(String orderId) async {
     // TODO: implement createOrderRefil
     throw UnimplementedError();
   }

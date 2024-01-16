@@ -16,5 +16,7 @@ Handler middleware(Handler handler) {
       .use(jwtMiddleware()) // Apply JWT authentication middleware.
       .use(dbMiddleware()) // Apply database middleware.
       .use(serviceMiddleWare()) // Apply service middleware.
-      .use(otpMiddleWare()); // Apply Otp middleware
+      .use(otpMiddleWare())
+      .use(supportDbMiddleware())
+      .use(marketPlaceDbMiddleware()); // Apply Otp middleware
 }

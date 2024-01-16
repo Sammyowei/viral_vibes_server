@@ -5,11 +5,12 @@
 abstract class ServiceClient {
   Future<void> initialize();
 
-  Future<Map<String, dynamic>> addOrder(int orderId, String link, int quantity);
+  Future<Map<String, dynamic>> addOrder(
+      String orderId, String link, int quantity);
 
-  Future<Map<String, dynamic>> createOrderRefil(int orderId);
+  Future<Map<String, dynamic>> createOrderRefil(String orderId);
 
-  Future<Map<String, dynamic>> createMultipleOrderRefil(List<int> orderIds);
+  Future<Map<String, dynamic>> createMultipleOrderRefil(List<String> orderIds);
 
   Future<List<Map<String, dynamic>>> orderStatus();
 
