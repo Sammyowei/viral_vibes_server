@@ -1,66 +1,61 @@
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_web_socket/dart_frog_web_socket.dart';
 
 import '../../../src/db/support_db_controller.dart';
-import '../../../src/models/message_model.dart';
-import '../../../src/models/support_data_model.dart';
 
+final List<WebSocketChannel> connectedClients = [];
 FutureOr<Response> onRequest(RequestContext context, String id) async {
-  final supportDbController = await context.read<Future<SupportDbController>>();
+  final supportDb = await context.read<Future<SupportDbController>>();
 
-  await supportDbController.openConnection();
+  await supportDb.openConnection();
 
-  final ticket = await supportDbController.read(id);
-  await supportDbController.closeConnection();
+  final result = await supportDb.read(id);
+  await supportDb.closeConnection();
 
-  late SupportChatModel chats;
-  if (ticket == null) {
-    chats = SupportChatModel(ticketID: id);
-    await supportDbController.openConnection();
-    await supportDbController.create(chats.toJson());
-    await supportDbController.closeConnection();
+  if (result != null) {
+    print('ticket already created ');
   } else {
-    chats = SupportChatModel.fromJson(ticket);
+    await supportDb.openConnection();
+    await supportDb.create({'ticketID': id});
+    await supportDb.closeConnection();
+
+    print('new Ticket created');
   }
 
   final handler = webSocketHandler(
     (channel, protocol) {
+      connectedClients.add(channel);
       channel.stream.listen(
         (message) async {
           // Listen to the incomming json encoded message and perfom the message adding abd parse it to the db
 
-          final serializedMessage = jsonDecode(message as String);
-          // print(serializedMessage);
-          final messageModel =
-              MessageModel.fromJson(serializedMessage as Map<String, dynamic>);
+          for (var client in connectedClients) {
+            if (client != channel) {
+              client.sink.add(message);
+            }
+          }
 
-          print(messageModel.id);
-          print(messageModel.message);
-
-          chats.addTomessages(messageModel);
-
-          await supportDbController.openConnection();
-          await supportDbController.update(chats.ticketID, chats.toJson());
-          await supportDbController.closeConnection();
-          channel.sink.add(
-            jsonEncode(
-              chats.toJson(),
-            ),
-          );
+          print("Message received from $id: $message");
         },
         onDone: () {
           // What to do when they disconnect fro the websocket
+          connectedClients.remove(channel);
         },
       );
-
-//
-      final serializedResponse = jsonEncode(chats.toJson());
-      channel.sink.add(serializedResponse);
+      Future.delayed(
+        const Duration(
+          seconds: 2,
+        ),
+        () {
+          channel.sink.add(
+            'Welcome to the Viral Vibes Support Live Chat Channel. Our dedicated customer representatives are currently attending to other inquiries and will be with you shortly. We appreciate your patience.',
+          );
+        },
+      );
     },
   );
   return handler(context);

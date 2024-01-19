@@ -31,7 +31,7 @@ class ServiceProvider extends ServiceClient {
   static DbController _dbController = DbController(
     store: Env.dbStore,
   );
-  static double nairaToDollar = 1350;
+  static double nairaToDollar = 1500;
   static const endPoint = 'api/v2';
 
   Service? getServiceDetails(String serviceId) {

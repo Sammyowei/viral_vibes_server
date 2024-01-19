@@ -5,23 +5,23 @@ import 'dart:async';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_web_socket/dart_frog_web_socket.dart';
 
-import '../../../src/db/support_db_controller.dart';
+import '../../../src/db/marketplace_db_controller.dart';
 
 final List<WebSocketChannel> connectedClients = [];
 FutureOr<Response> onRequest(RequestContext context, String id) async {
-  final supportDb = await context.read<Future<SupportDbController>>();
+  final marketplacedb = await context.read<Future<MarketplaceDbController>>();
 
-  await supportDb.openConnection();
+  await marketplacedb.openConnection();
 
-  final result = await supportDb.read(id);
-  await supportDb.closeConnection();
+  final result = await marketplacedb.read(id);
+  await marketplacedb.closeConnection();
 
   if (result != null) {
-    print('ticket already created ');
+    print('ticket already created');
   } else {
-    await supportDb.openConnection();
-    await supportDb.create({'ticketID': id});
-    await supportDb.closeConnection();
+    await marketplacedb.openConnection();
+    await marketplacedb.create({'ticketID': id});
+    await marketplacedb.closeConnection();
 
     print('new Ticket created');
   }
@@ -31,18 +31,13 @@ FutureOr<Response> onRequest(RequestContext context, String id) async {
       connectedClients.add(channel);
       channel.stream.listen(
         (message) async {
-          // Listen to the incomming json encoded message and perfom the message adding abd parse it to the db
-
-          for (var client in connectedClients) {
+          for (final client in connectedClients) {
             if (client != channel) {
               client.sink.add(message);
             }
           }
-
-          print("Message received from $id: $message");
         },
         onDone: () {
-          // What to do when they disconnect fro the websocket
           connectedClients.remove(channel);
         },
       );
@@ -52,7 +47,7 @@ FutureOr<Response> onRequest(RequestContext context, String id) async {
         ),
         () {
           channel.sink.add(
-            'Welcome to the Viral Vibes Support Live Chat Channel. Our dedicated customer representatives are currently attending to other inquiries and will be with you shortly. We appreciate your patience.',
+            'Welcome to the Viral Vibes Marketplace Live Chat Channel. Our dedicated team is currently assisting other inquiries and will be with you shortly. We appreciate your patience.',
           );
         },
       );

@@ -8,6 +8,7 @@ import 'package:dart_frog/dart_frog.dart';
 
 import '../routes/index.dart' as index;
 import '../routes/websockets/support/[id].dart' as websockets_support_$id;
+import '../routes/websockets/marketplace/[id].dart' as websockets_marketplace_$id;
 import '../routes/api/user/[id].dart' as api_user_$id;
 import '../routes/api/service/services.dart' as api_service_services;
 import '../routes/api/auth/verify.dart' as api_auth_verify;
@@ -41,6 +42,7 @@ Handler buildRootHandler() {
     ..mount('/api/auth', (context) => buildApiAuthHandler()(context))
     ..mount('/api/service', (context) => buildApiServiceHandler()(context))
     ..mount('/api/user', (context) => buildApiUserHandler()(context))
+    ..mount('/websockets/marketplace', (context) => buildWebsocketsMarketplaceHandler()(context))
     ..mount('/websockets/support', (context) => buildWebsocketsSupportHandler()(context))
     ..mount('/', (context) => buildHandler()(context));
   return pipeline.addHandler(router);
@@ -85,6 +87,13 @@ Handler buildApiUserHandler() {
   final pipeline = const Pipeline();
   final router = Router()
     ..all('/<id>', (context,id,) => api_user_$id.onRequest(context,id,));
+  return pipeline.addHandler(router);
+}
+
+Handler buildWebsocketsMarketplaceHandler() {
+  final pipeline = const Pipeline();
+  final router = Router()
+    ..all('/<id>', (context,id,) => websockets_marketplace_$id.onRequest(context,id,));
   return pipeline.addHandler(router);
 }
 
