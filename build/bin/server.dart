@@ -11,6 +11,8 @@ import '../routes/websockets/support/[id].dart' as websockets_support_$id;
 import '../routes/websockets/marketplace/[id].dart' as websockets_marketplace_$id;
 import '../routes/api/user/[id].dart' as api_user_$id;
 import '../routes/api/service/services.dart' as api_service_services;
+import '../routes/api/service/create_refill.dart' as api_service_create_refill;
+import '../routes/api/service/add_orders.dart' as api_service_add_orders;
 import '../routes/api/auth/verify.dart' as api_auth_verify;
 import '../routes/api/auth/signup.dart' as api_auth_signup;
 import '../routes/api/auth/signin.dart' as api_auth_signin;
@@ -79,7 +81,7 @@ Handler buildApiAuthHandler() {
 Handler buildApiServiceHandler() {
   final pipeline = const Pipeline();
   final router = Router()
-    ..all('/services', (context) => api_service_services.onRequest(context,));
+    ..all('/services', (context) => api_service_services.onRequest(context,))..all('/create_refill', (context) => api_service_create_refill.onRequest(context,))..all('/add_orders', (context) => api_service_add_orders.onRequest(context,));
   return pipeline.addHandler(router);
 }
 

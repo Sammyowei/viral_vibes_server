@@ -22,16 +22,28 @@ class ServiceProvider extends ServiceClient {
     this.orderId,
   });
 
+  set orderID(int? order) {
+    orderId = order;
+  }
+
+  int? get orderID => orderId;
+
+  String? get accountID => accountIdentifier;
+
+  set accountID(String? accountID) {
+    accountIdentifier = accountID;
+  }
+
   List<Service> _serviceList = [];
-  final String? accountIdentifier;
-  final int? orderId;
+  String? accountIdentifier;
+  int? orderId;
 
   List<Service> get services => _serviceList;
   static final networkClient = NetworkHttpClient(baseUrl: Env.serviceApiUrl);
   static DbController _dbController = DbController(
     store: Env.dbStore,
   );
-  static double nairaToDollar = 1400;
+  static double nairaToDollar = 1550;
   static const endPoint = 'api/v2';
 
   Service? getServiceDetails(String serviceId) {
