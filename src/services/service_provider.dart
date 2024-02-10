@@ -2,13 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: prefer_final_fields, no_leading_underscores_for_local_identifiers, lines_longer_than_80_chars, avoid_dynamic_calls
+// ignore_for_file: prefer_final_fields, no_leading_underscores_for_local_identifiers, lines_longer_than_80_chars, avoid_dynamic_calls, use_setters_to_change_properties, avoid_setters_without_getters
 
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
 import 'package:viral_vibes_server/lib.dart';
-
 import '../db/db_controller.dart';
 import '../models/order_model.dart';
 import '../models/service_model.dart';
@@ -20,14 +20,19 @@ class ServiceProvider extends ServiceClient {
   ServiceProvider({
     this.accountIdentifier,
     this.orderId,
-  });
+    DbController? dbController,
+  }) : _dbController = dbController ?? DbController(store: Env.dbStore);
 
   set orderID(int? order) {
     orderId = order;
   }
 
-  int? get orderID => orderId;
+  set dbcontroller(DbController controller) {
+    _dbController = controller;
+  }
 
+  int? get orderID => orderId;
+  DbController _dbController;
   String? get accountID => accountIdentifier;
 
   set accountID(String? accountID) {
@@ -40,9 +45,7 @@ class ServiceProvider extends ServiceClient {
 
   List<Service> get services => _serviceList;
   static final networkClient = NetworkHttpClient(baseUrl: Env.serviceApiUrl);
-  static DbController _dbController = DbController(
-    store: Env.dbStore,
-  );
+
   static double nairaToDollar = 1550;
   static const endPoint = 'api/v2';
 
@@ -64,25 +67,35 @@ class ServiceProvider extends ServiceClient {
     return null;
   }
 
+  Service? getServiceById(String serviceId) {
+    // Use the map method to find the service with the matching serviceId
+    var matchingServices =
+        _serviceList.where((serv) => serv.serviceId == serviceId);
+
+    // If any matching service is found, return the first one; otherwise, return null.
+    return matchingServices.isNotEmpty ? matchingServices.first : null;
+  }
+
   @override
   Future<Map<String, dynamic>> addOrder(
     String orderId,
     String link,
     int quantity,
   ) async {
-    final service = getServiceDetails(orderId);
+    final service = getServiceById(orderId);
     final companybalance = await getCompanyBalance();
 
     if (service == null) {
-      throw ArgumentError();
+      throw ArgumentError('This is where the issue is comming');
     }
-
     await _dbController.openConnection();
 
     final userData = await _dbController.read(accountIdentifier!);
     await _dbController.closeConnection();
+
+    print(userData);
     if (userData == null) {
-      throw const SocketException.closed();
+      throw ArgumentError('final user Data is $userData');
     }
 
     final user = User.fromJson(userData);
@@ -105,10 +118,23 @@ class ServiceProvider extends ServiceClient {
       return {'error': 'Insufficient funds.'};
     }
 
-    final data = {'key': Env.serviceApiKey, 'action': 'order'};
-    final order = await networkClient.postRequest(endPoint, data);
+    final data = {
+      "key": Env.serviceApiKey,
+      "action": "add",
+      "service": orderId,
+      "link": link,
+      "quantity": quantity.toString()
+    };
+
+    final order = await http.post(
+      Uri.parse("https://justanotherpanel.com/api/v2"),
+      body: data,
+    );
+
     if (order.statusCode != HttpStatus.ok) {
-      return {'error': 'We apologize, an error occurred on our end.'};
+      return {
+        'error': 'We apologize, an error occurred on our end.',
+      };
     }
 
     user.withraw(servicePrice);
@@ -158,8 +184,8 @@ class ServiceProvider extends ServiceClient {
     final payload = await networkClient.postRequest(endPoint, body);
     final data = jsonDecode(payload.body);
 
-    final usdAmount = data['balance'] as double;
-    final companyWalletBalance = usdAmount * 1100;
+    final usdAmount = data['balance'] as String;
+    final companyWalletBalance = double.parse(usdAmount) * 1100;
     return companyWalletBalance;
   }
 
@@ -187,7 +213,7 @@ class ServiceProvider extends ServiceClient {
 
   @override
   Future<List<Map<String, dynamic>>> orderStatus() async {
-    StringBuffer idsBuffer = StringBuffer();
+    final idsBuffer = StringBuffer();
     var orderIds = '';
     await _dbController.openConnection();
     final userData = await _dbController.read(accountIdentifier!);

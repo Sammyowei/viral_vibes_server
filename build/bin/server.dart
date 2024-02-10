@@ -9,9 +9,11 @@ import 'package:dart_frog/dart_frog.dart';
 import '../routes/index.dart' as index;
 import '../routes/websockets/support/[id].dart' as websockets_support_$id;
 import '../routes/websockets/marketplace/[id].dart' as websockets_marketplace_$id;
+import '../routes/webhooks/payment_validator.dart' as webhooks_payment_validator;
 import '../routes/api/user/[id].dart' as api_user_$id;
 import '../routes/api/service/services.dart' as api_service_services;
 import '../routes/api/service/create_refill.dart' as api_service_create_refill;
+import '../routes/api/service/check_order.dart' as api_service_check_order;
 import '../routes/api/service/add_orders.dart' as api_service_add_orders;
 import '../routes/api/auth/verify.dart' as api_auth_verify;
 import '../routes/api/auth/signup.dart' as api_auth_signup;
@@ -44,6 +46,7 @@ Handler buildRootHandler() {
     ..mount('/api/auth', (context) => buildApiAuthHandler()(context))
     ..mount('/api/service', (context) => buildApiServiceHandler()(context))
     ..mount('/api/user', (context) => buildApiUserHandler()(context))
+    ..mount('/webhooks', (context) => buildWebhooksHandler()(context))
     ..mount('/websockets/marketplace', (context) => buildWebsocketsMarketplaceHandler()(context))
     ..mount('/websockets/support', (context) => buildWebsocketsSupportHandler()(context))
     ..mount('/', (context) => buildHandler()(context));
@@ -81,7 +84,7 @@ Handler buildApiAuthHandler() {
 Handler buildApiServiceHandler() {
   final pipeline = const Pipeline();
   final router = Router()
-    ..all('/services', (context) => api_service_services.onRequest(context,))..all('/create_refill', (context) => api_service_create_refill.onRequest(context,))..all('/add_orders', (context) => api_service_add_orders.onRequest(context,));
+    ..all('/services', (context) => api_service_services.onRequest(context,))..all('/create_refill', (context) => api_service_create_refill.onRequest(context,))..all('/check_order', (context) => api_service_check_order.onRequest(context,))..all('/add_orders', (context) => api_service_add_orders.onRequest(context,));
   return pipeline.addHandler(router);
 }
 
@@ -89,6 +92,13 @@ Handler buildApiUserHandler() {
   final pipeline = const Pipeline();
   final router = Router()
     ..all('/<id>', (context,id,) => api_user_$id.onRequest(context,id,));
+  return pipeline.addHandler(router);
+}
+
+Handler buildWebhooksHandler() {
+  final pipeline = const Pipeline();
+  final router = Router()
+    ..all('/payment_validator', (context) => webhooks_payment_validator.onRequest(context,));
   return pipeline.addHandler(router);
 }
 

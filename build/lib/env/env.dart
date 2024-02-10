@@ -49,4 +49,24 @@ abstract class Env {
 
   @EnviedField(varName: 'MARKET_DB_STORE', obfuscate: true)
   static final String marketplaceDbStore = _Env.marketplaceDbStore;
+
+  @EnviedField(varName: 'FLUTTERWAVE_SECRET_TEST', obfuscate: true)
+  static final String flutterwaveSecretTest = _Env.flutterwaveSecretTest;
+
+  @EnviedField(varName: 'FLUTTERWAVE_PUBLIC_KEY_TEST', obfuscate: true)
+  static final String flutterwavePublicKeyTest = _Env.flutterwavePublicKeyTest;
+
+  @EnviedField(varName: 'FLUTTERWAVE_ENCRYPTION_KEY_TEST', obfuscate: true)
+  static final String flutterwaveEncryptionKeyTest =
+      _Env.flutterwaveEncryptionKeyTest;
+
+  @EnviedField(varName: 'FLUTTERWAVE_SECRET_LIVE', obfuscate: true)
+  static final String flutterwaveSecretLive = _Env.flutterwaveSecretLive;
+
+  @EnviedField(varName: 'FLUTTERWAVE_PUBLIC_KEY_LIVE', obfuscate: true)
+  static final String flutterwavePublicKeyLive = _Env.flutterwavePublicKeyLive;
+
+  @EnviedField(varName: 'FLUTTERWAVE_ENCRYPTION_KEY_LIVE', obfuscate: true)
+  static final String flutterwaveEncryptionKeyLive =
+      _Env.flutterwaveEncryptionKeyLive;
 }
