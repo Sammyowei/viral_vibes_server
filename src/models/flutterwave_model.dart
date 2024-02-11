@@ -113,22 +113,16 @@ class Customizations {
 class Meta {
   Meta({
     this.consumerId,
-    this.consumerMac,
   });
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
-        consumerId: json['consumer_id'] as int?,
-        consumerMac: json['consumer_mac'] as String?,
+        consumerId: json['consumer_id'] as String?,
       );
-  int? consumerId;
-  String? consumerMac;
+  String? consumerId;
 
-  void setconsumerId(int? consId) => consumerId = consId;
-
-  void setconsumerMac(String? consMac) => consumerMac = consMac;
+  void setconsumerId(String? consId) => consumerId = consId;
 
   Map<String, dynamic> toJson() => {
         'consumer_id': consumerId,
-        'consumer_mac': consumerMac,
       };
 }

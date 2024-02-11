@@ -67,7 +67,7 @@ class User {
     isVerified = true;
   }
 
-  void deposit(double amount) {
+  void deposit(num amount) {
     walletBalance = walletBalance + amount;
   }
 

@@ -15,6 +15,7 @@ import '../routes/api/service/services.dart' as api_service_services;
 import '../routes/api/service/create_refill.dart' as api_service_create_refill;
 import '../routes/api/service/check_order.dart' as api_service_check_order;
 import '../routes/api/service/add_orders.dart' as api_service_add_orders;
+import '../routes/api/payments/payment.dart' as api_payments_payment;
 import '../routes/api/auth/verify.dart' as api_auth_verify;
 import '../routes/api/auth/signup.dart' as api_auth_signup;
 import '../routes/api/auth/signin.dart' as api_auth_signin;
@@ -44,6 +45,7 @@ Handler buildRootHandler() {
     ..mount('/admin', (context) => buildAdminHandler()(context))
     ..mount('/api/auth/otp', (context) => buildApiAuthOtpHandler()(context))
     ..mount('/api/auth', (context) => buildApiAuthHandler()(context))
+    ..mount('/api/payments', (context) => buildApiPaymentsHandler()(context))
     ..mount('/api/service', (context) => buildApiServiceHandler()(context))
     ..mount('/api/user', (context) => buildApiUserHandler()(context))
     ..mount('/webhooks', (context) => buildWebhooksHandler()(context))
@@ -78,6 +80,13 @@ Handler buildApiAuthHandler() {
   final pipeline = const Pipeline();
   final router = Router()
     ..all('/verify', (context) => api_auth_verify.onRequest(context,))..all('/signup', (context) => api_auth_signup.onRequest(context,))..all('/signin', (context) => api_auth_signin.onRequest(context,));
+  return pipeline.addHandler(router);
+}
+
+Handler buildApiPaymentsHandler() {
+  final pipeline = const Pipeline();
+  final router = Router()
+    ..all('/payment', (context) => api_payments_payment.onRequest(context,));
   return pipeline.addHandler(router);
 }
 

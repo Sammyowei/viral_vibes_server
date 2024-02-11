@@ -10,19 +10,22 @@ class Transactions {
     required this.dateTime,
     required this.method,
     required this.referenceId,
+    required this.status,
   });
 
-  final double amount;
+  final num amount;
   final DateTime dateTime;
   final String referenceId;
   final String method;
+  final String status;
 
   factory Transactions.fromJson(Map<String, dynamic> json) {
     return Transactions(
-      amount: json['amount'] as double,
+      amount: json['amount'] as num,
       dateTime: DateTime.parse(json['dateTime'].toString()),
       referenceId: json['referenceId'] as String,
       method: json['method'] as String,
+      status: json['status'] as String,
     );
   }
 
@@ -33,6 +36,7 @@ class Transactions {
       dateTime: DateTime.parse(params['dateTime']!),
       referenceId: params['referenceId']!,
       method: params['method']!,
+      status: params['status']!,
     );
   }
 
@@ -43,12 +47,13 @@ class Transactions {
       dateTime: DateTime.parse(queryParams['dateTime']!),
       referenceId: queryParams['referenceId']!,
       method: queryParams['method']!,
+      status: queryParams['status']!,
     );
   }
 
   // Convert Transactions to query parameter string
   String toQueryParam() {
-    return 'amount=$amount&dateTime=${dateTime.toIso8601String()}&referenceId=$referenceId&method=$method';
+    return 'amount=$amount&dateTime=${dateTime.toIso8601String()}&referenceId=$referenceId&method=$method&status$status';
   }
 
   Map<String, dynamic> toJson() {
@@ -57,6 +62,7 @@ class Transactions {
       'dateTime': dateTime.toIso8601String(),
       'referenceId': referenceId,
       'method': method,
+      'status': status
     };
   }
 }

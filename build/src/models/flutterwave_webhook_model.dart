@@ -16,7 +16,9 @@ class FlutterWaveWebhook {
   factory FlutterWaveWebhook.fromJson(Map<String, dynamic> json) =>
       FlutterWaveWebhook(
         event: json['event'] as String?,
-        data: json['data'] as Data?,
+        data: json['data'] == null
+            ? null
+            : Data.fromJson(json['data'] as Map<String, dynamic>),
       );
 
   String? event;
@@ -56,11 +58,11 @@ class Data {
         txRef: json['tx_ref'] as String?,
         flwRef: json['flw_ref'] as String?,
         deviceFingerprint: json['device_fingerprint'] as String?,
-        amount: json['amount'] as int?,
+        amount: json['amount'] as num?,
         currency: json['currency'] as String?,
-        chargedAmount: json['charged_amount'] as int?,
-        appFee: json['app_fee'] as double?,
-        merchantFee: json['merchant_fee'] as int?,
+        chargedAmount: json['charged_amount'] as num?,
+        appFee: json['app_fee'] as num?,
+        merchantFee: json['merchant_fee'] as num?,
         processorResponse: json['processor_response'] as String?,
         authModel: json['auth_model'] as String?,
         ip: json['ip'] as String?,
@@ -82,11 +84,11 @@ class Data {
   String? txRef;
   String? flwRef;
   String? deviceFingerprint;
-  int? amount;
+  num? amount;
   String? currency;
-  int? chargedAmount;
-  double? appFee;
-  int? merchantFee;
+  num? chargedAmount;
+  num? appFee;
+  num? merchantFee;
   String? processorResponse;
   String? authModel;
   String? ip;
@@ -186,5 +188,32 @@ class Customer {
         'phone_number': phoneNumber,
         'email': email,
         'created_at': createdAt?.toIso8601String(),
+      };
+}
+
+String flutterwavewebhookDataToJson(FlutterwavewebhookData data) =>
+    json.encode(data.toJson());
+
+class FlutterwavewebhookData {
+  FlutterwavewebhookData({
+    this.status,
+    this.txRef,
+    this.transactionId,
+  });
+
+  factory FlutterwavewebhookData.fromJson(Map<String, dynamic> json) =>
+      FlutterwavewebhookData(
+        status: json['status'] as String?,
+        txRef: json['tx_ref'] as String?,
+        transactionId: json['transaction_id'] as String?,
+      );
+  String? status;
+  String? txRef;
+  String? transactionId;
+
+  Map<String, dynamic> toJson() => {
+        'status': status,
+        'tx_ref': txRef,
+        'transaction_id': transactionId,
       };
 }
