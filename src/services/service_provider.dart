@@ -58,7 +58,7 @@ class ServiceProvider extends ServiceClient {
 
       if (services[mid].serviceId == serviceId) {
         return services[mid];
-      } else if (services[mid].serviceId.compareTo(serviceId.toString()) < 0) {
+      } else if (services[mid].serviceId.compareTo(serviceId) < 0) {
         low = mid + 1;
       } else {
         high = mid - 1;
@@ -259,6 +259,12 @@ class ServiceProvider extends ServiceClient {
 
     for (final element in jsonPayload.values) {
       orderStatusList.add(element as Map<String, dynamic>);
+    }
+
+    for (var index = 0; index < orderStatusList.length; index++) {
+      final link = user.orderHistory[index].link;
+
+      orderStatusList[index].putIfAbsent('link', () => link);
     }
 
     return orderStatusList;
