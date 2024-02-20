@@ -46,7 +46,7 @@ class ServiceProvider extends ServiceClient {
   List<Service> get services => _serviceList;
   static final networkClient = NetworkHttpClient(baseUrl: Env.serviceApiUrl);
 
-  static double nairaToDollar = 1700;
+  static double nairaToDollar = 2300;
   static const endPoint = 'api/v2';
 
   Service? getServiceDetails(String serviceId) {
