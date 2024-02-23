@@ -7,7 +7,8 @@
             "namespace": "android_app",
             "package_name": "com.hawkitpro.viral_vibes_mobile",
             "sha256_cert_fingerprints": [
-                "C0:B2:E4:B4:D1:16:C5:7F:62:36:51:77:AF:3B:D0:4A:F8:96:B5:CE:69:8A:A8:E4:53:B0:5B:D3:A9:DB:C0:EB"
+                "C0:B2:E4:B4:D1:16:C5:7F:62:36:51:77:AF:3B:D0:4A:F8:96:B5:CE:69:8A:A8:E4:53:B0:5B:D3:A9:DB:C0:EB",
+                "D4:E9:47:8F:32:B4:ED:2C:57:19:64:6B:F7:97:DA:1B:A7:05:EC:C9:CC:8A:10:9F:79:81:6D:22:AB:DD:DF:6B"
             ]
         }
     }
