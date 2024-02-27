@@ -69,7 +69,7 @@ class FlutterwaveCheckoutClient {
     try {
       final header = {
         HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-        HttpHeaders.authorizationHeader: 'Bearer ${Env.flutterwaveSecretTest}'
+        HttpHeaders.authorizationHeader: 'Bearer ${Env.flutterwaveSecretLive}'
       };
       final response = await fluttterwaveClientCommunicator.getRequest(
         'v3/transactions/$transactionID/verify',

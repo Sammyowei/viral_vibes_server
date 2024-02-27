@@ -32,6 +32,7 @@ Future<Response> onRequest(RequestContext context) async {
 
   final amount = response?.data?.amount;
 
+  print(response?.data?.toJson());
   final accountID = response!.data!.customer!.email;
 
   final db = await context.read<Future<DbController>>();
