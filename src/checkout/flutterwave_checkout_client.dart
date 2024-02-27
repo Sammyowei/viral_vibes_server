@@ -48,7 +48,7 @@ class FlutterwaveCheckoutClient {
         'v3/payments',
         data,
         headers: {
-          'Authorization': 'Bearer ${Env.flutterwaveSecretTest}',
+          'Authorization': 'Bearer ${Env.flutterwaveSecretLive}',
           HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
         },
       );
