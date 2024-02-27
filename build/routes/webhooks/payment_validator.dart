@@ -50,6 +50,37 @@ Future<Response> onRequest(RequestContext context) async {
 
   final user = User.fromJson(data);
 
+  if (user.isReferred == true && user.transactionHistory.isEmpty) {
+    final referee = user.referee;
+
+    await db.openConnection();
+    final refereeData = await db.read(referee!);
+    await db.closeConnection();
+
+    if (refereeData != null) {
+      final refererUser = User.fromJson(refereeData);
+
+      final percentage = amount! * 0.1;
+
+      final referalTransaction = Transactions(
+        amount: amount,
+        dateTime: DateTime.now(),
+        method: 'Referral Bonus',
+        referenceId: const Uuid().v4(),
+        status: 'successful',
+      );
+
+      refererUser
+        ..deposit(percentage)
+        ..addTransaction(referalTransaction);
+      await db.openConnection();
+      await db.update(referee, refererUser.toJson());
+      await db.closeConnection();
+    }
+  }
+
+  // Continue deposit for user if not first
+
   final transaction = Transactions(
     amount: amount!,
     dateTime: DateTime.now(),
