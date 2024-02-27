@@ -82,8 +82,13 @@ Future<Response> onRequest(RequestContext context) async {
 
   // Continue deposit for user if not first
 
+  var newAmount = amount!;
+
+  if (user.isReferred && user.transactionHistory.isEmpty) {
+    newAmount = amount + (amount * 0.1);
+  }
   final transaction = Transactions(
-    amount: amount!,
+    amount: newAmount,
     dateTime: DateTime.now(),
     method: 'Cash Deposit',
     referenceId: const Uuid().v4(),
