@@ -87,6 +87,7 @@ Future<Response> onRequest(RequestContext context) async {
   if (user.isReferred && user.transactionHistory.isEmpty) {
     newAmount = amount + (amount * 0.1);
   }
+
   final transaction = Transactions(
     amount: newAmount,
     dateTime: DateTime.now(),

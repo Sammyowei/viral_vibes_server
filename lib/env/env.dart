@@ -4,8 +4,6 @@
 
 // ignore_for_file: public_member_api_docs
 
-import 'dart:io';
-
 import 'package:envied/envied.dart';
 part 'env.g.dart';
 
@@ -69,4 +67,10 @@ abstract class Env {
   @EnviedField(varName: 'FLUTTERWAVE_ENCRYPTION_KEY_LIVE', obfuscate: true)
   static final String flutterwaveEncryptionKeyLive =
       _Env.flutterwaveEncryptionKeyLive;
+
+  @EnviedField(varName: 'MAILERSEND_API_KEY', obfuscate: true)
+  static final String mailerSendApiKey = _Env.mailerSendApiKey;
+
+  @EnviedField(varName: 'MAILERSEND_API_URL', obfuscate: false)
+  static final String mailerSendApiUrl = _Env.mailerSendApiUrl;
 }

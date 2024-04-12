@@ -1,6 +1,7 @@
+// ignore_for_file: strict_raw_type
+
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
-import 'package:viral_vibes_server/lib.dart';
 
 import '../smpt_client.dart';
 
@@ -12,19 +13,20 @@ class SmptMailer {
 
   void _init() {
     _smptClient
-      ..smptEmail = Env.smptServerEmail
-      ..smptPassword = Env.smptServerPassword;
+      ..smptEmail = 'viralvibes@hawkitpro.com'
+      ..smptPassword = 'rqex ozor eski cvqk';
   }
 
   SmtpServer _smtpServer() {
-    final smptServer = SmtpServer(
-      Env.smptServer,
-      port: 465,
-      ssl: true,
-      password: _smptClient.smptPassword,
+    final smpt = SmtpServer(
+      'smtp.gmail.com',
       username: _smptClient.smptEmail,
+      password: _smptClient.smptPassword,
+      ssl: true,
+      port: 465,
+      ignoreBadCertificate: true,
     );
-    return smptServer;
+    return smpt;
   }
 
   Future<void> sendMail({
